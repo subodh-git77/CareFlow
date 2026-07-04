@@ -1,0 +1,20 @@
+import { Activity, ArrowRight, HeartPulse, LockKeyhole, Mail, ShieldCheck, Stethoscope, UserRound } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../utils/api';
+
+const demos = [
+  ['Patient', 'patient@careflow.demo', 'Patient123!', UserRound],
+  ['Doctor', 'doctor@careflow.demo', 'Doctor123!', Stethoscope],
+  ['Admin', 'admin@careflow.demo', 'Admin123!', ShieldCheck]
+];
+export default function Login({ onLogin }) {
+  const [form,setForm] = useState({email:'',password:''}); const [error,setError]=useState(''); const [loading,setLoading]=useState(false); const navigate=useNavigate();
+  const submit = async e => { e.preventDefault(); setLoading(true); setError(''); try { const data=await authAPI.login(form.email,form.password); onLogin(data.user,data.token); navigate('/'); } catch(err){setError(err.message)} finally{setLoading(false)} };
+  return <div className="min-h-screen bg-slate-950 lg:grid lg:grid-cols-2">
+    <section className="relative hidden overflow-hidden p-14 text-white lg:flex lg:flex-col lg:justify-between"><div className="absolute -left-20 top-40 h-80 w-80 rounded-full bg-teal-400/20 blur-3xl"/><div className="relative flex items-center gap-3 text-xl font-bold"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-teal-400 text-slate-950"><Activity/></span>CareFlow</div><div className="relative max-w-xl"><p className="mb-5 text-sm font-bold uppercase tracking-[.25em] text-teal-300">One calm place for better care</p><h1 className="text-6xl font-bold leading-[1.05] tracking-tight">Healthcare should feel connected.</h1><p className="mt-6 text-lg leading-8 text-slate-300">Appointments, clinical follow-ups, prescriptions, reminders, and helpful AI context—without the usual maze.</p></div><div className="relative flex items-center gap-3 text-sm text-slate-400"><HeartPulse className="text-teal-400"/>Secure role-based care coordination</div></section>
+    <section className="grid min-h-screen place-items-center bg-[#f6f8f8] px-5 py-10"><div className="w-full max-w-md"><div className="mb-8 lg:hidden"><Activity className="text-teal-600" size={34}/></div><p className="text-xs font-bold uppercase tracking-[.2em] text-teal-600">Welcome back</p><h2 className="mt-2 text-4xl font-bold tracking-tight">Sign in to your care space</h2><p className="mt-3 text-sm text-slate-500">Use your account or pick a demo below.</p>{error && <p className="mt-5 rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
+      <form onSubmit={submit} className="mt-8 space-y-5"><div><label className="label">Email address</label><div className="relative"><Mail className="absolute left-4 top-3.5 text-slate-400" size={18}/><input className="input pl-11" type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="you@example.com"/></div></div><div><label className="label">Password</label><div className="relative"><LockKeyhole className="absolute left-4 top-3.5 text-slate-400" size={18}/><input className="input pl-11" type="password" required value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Minimum 8 characters"/></div></div><button disabled={loading} className="btn-primary w-full">{loading?'Signing in…':'Sign in'}<ArrowRight size={17}/></button></form>
+      <div className="my-7 flex items-center gap-3 text-xs text-slate-400"><span className="h-px flex-1 bg-slate-200"/>Demo accounts<span className="h-px flex-1 bg-slate-200"/></div><div className="grid grid-cols-3 gap-2">{demos.map(([name,email,password,Icon])=><button key={name} onClick={()=>setForm({email,password})} className="rounded-2xl border border-slate-200 bg-white p-3 text-center text-xs font-semibold shadow-sm transition hover:border-teal-300"><Icon className="mx-auto mb-2 text-teal-700" size={18}/>{name}</button>)}</div><p className="mt-8 text-center text-sm text-slate-500">New patient? <Link className="font-bold text-teal-700" to="/register">Create an account</Link></p></div></section>
+  </div>;
+}
