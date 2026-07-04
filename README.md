@@ -83,35 +83,6 @@ Open `http://localhost:3000`.
 
 Public registration intentionally creates patients only. Admins are seeded; doctors are created by an admin. This prevents role escalation from the public form.
 
-## Environment variables
-
-The complete templates are `backend/.env.example` and `frontend/.env.example`.
-
-```dotenv
-USE_LOCAL_JSON_DB=true
-PORT=5000
-FRONTEND_URL=http://localhost:3000
-MONGO_URI=mongodb://127.0.0.1:27017/careflow
-JWT_SECRET=replace_with_a_long_random_secret
-JWT_EXPIRES_IN=7d
-APP_TIMEZONE=Asia/Kolkata
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_smtp_username
-SMTP_PASS=your_smtp_app_password
-SMTP_FROM=CareFlow <noreply@example.com>
-OPENAI_API_KEY=
-OPENAI_MODEL=gpt-4o-mini
-GEMINI_API_KEY=
-GEMINI_MODEL=gemini-1.5-flash
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=http://localhost:5000/api/calendar/callback
-GOOGLE_REFRESH_TOKEN=
-GOOGLE_CALENDAR_ID=primary
-```
-
-With `USE_LOCAL_JSON_DB=true`, data is persisted in `backend/data` for zero-install local development. Set it to `false` on Render to use `MONGO_URI` and real MongoDB constraints. Without SMTP credentials, messages are safely previewed in the backend console and logged as development sends. Without an LLM key, booking still succeeds and stores: `AI summary unavailable, doctor can review symptoms manually`. Without Google credentials, calendar operations use persisted mock event records so the rest of the workflow remains testable.
 
 ## REST API
 
@@ -214,25 +185,6 @@ npm run check
 cd ..\frontend
 npm run build
 ```
-
-## Deploy
-
-### Render backend
-
-- Root directory: `backend`
-- Build: `npm install`
-- Start: `npm start`
-- Add every backend environment variable, set `USE_LOCAL_JSON_DB=false`, and use MongoDB Atlas for `MONGO_URI`.
-- Set `FRONTEND_URL` to the Vercel URL and `APP_TIMEZONE` to the clinic timezone.
-- Seed once from a secure shell only if demo data is wanted.
-
-### Vercel frontend
-
-- Root directory: `frontend`
-- Build: `npm run build`
-- Output: `dist`
-- Set `VITE_API_URL=https://your-render-service.onrender.com`.
-- Redeploy after changing Vite environment variables.
 
 ## System design (under 800 words)
 
